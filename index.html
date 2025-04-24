@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>StepStyle - Premium Footwear</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto+Slab:400,300,700|Kaushan+Script|Droid+Serif:400,400i" rel="stylesheet">
+    <style>
+        body {
+            overflow-x: hidden;
+            font-family: "Roboto Slab","Helvetica Neue",Helvetica,Arial,sans-serif;
+        }
+        .text-muted { color: #777; }
+        .text-primary { color: #1ee2e7; }
+        p { font-size: 14px; line-height: 1.75; }
+        p.large { font-size: 16px; }
+        a, a:hover, a:focus, a:active, a.active { outline: 0; }
+        a { color: #1ee2e7; }
+        a:hover, a:focus, a:active, a.active { color: #17d0d5; }
+        h1, h2, h3, h4, h5, h6 {
+            text-transform: uppercase;
+            font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+            font-weight: 700;
+        }
+        .img-centered { margin: 0 auto; }
+        .bg-light-gray { background-color: #f7f7f7; }
+        .bg-darkest-gray { background-color: #222; }
+        .btn-primary {
+            border-color: #1ee2e7;
+            text-transform: uppercase;
+            font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+            font-weight: 700;
+            color: #fff;
+            background-color: #1ee2e7;
+        }
+        .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active {
+            border-color: #17d0d5;
+            color: #fff;
+            background-color: #17d0d5;
+        }
+        .btn-xl {
+            padding: 20px 40px;
+            border-color: #1ee2e7;
+            border-radius: 3px;
+            text-transform: uppercase;
+            font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            background-color: #1ee2e7;
+        }
+        .btn-xl:hover, .btn-xl:focus, .btn-xl:active, .btn-xl.active {
+            border-color: #17d0d5;
+            color: #fff;
+            background-color: #17d0d5;
+        }
+        
+        /* Navigation Bar Styles */
+        .navbar {
+            position: fixed;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            border-radius: 10px;
+            padding: 0 1rem;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            z-index: 1000;
+        }
+        .navbar__menu {
+            display: flex;
+            justify-content: center;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .navbar__item { position: relative; }
+        .navbar__link {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.2rem 1.5rem;
+            color: #6a778e;
+            transition: 250ms ease all;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .navbar__link i { margin-right: 0.5rem; font-size: 1.2rem; }
+        .navbar__link:hover { color: #fff; }
+        .navbar__item:before {
+            content: "";
+            position: absolute;
+            opacity: 0;
+            z-index: -1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1ee2e7;
+            border-radius: 5px;
+            transition: 250ms cubic-bezier(1, 0.2, 0.1, 1.2) all;
+        }
+        .navbar__item:hover:before {
+            opacity: 1;
+            animation: gooeyEffect 250ms 1;
+        }
+        @keyframes gooeyEffect {
+            0% { transform: scale(1, 1); }
+            50% { transform: scale(1.1, 0.9); }
+            100% { transform: scale(1, 1); }
+        }
+        .navbar__item.active .navbar__link:after {
+            content: "\f54b";
+            font-family: FontAwesome;
+            position: absolute;
+            bottom: -0.5rem;
+            font-size: 0.8rem;
+            color: #1ee2e7;
+        }
+        
+        /* Header Styles */
+        header {
+            text-align: center;
+            color: #fff;
+            background-image: url(https://images.unsplash.com/photo-1600585154340-be6161a56a0c?fit=crop&w=1350&h=900);
+            background-position: center center;
+            background-size: cover;
+            background-attachment: scroll;
+            margin-top: 50px;
+        }
+        header .intro-text { padding-top: 100px; padding-bottom: 50px; }
+        header .intro-text .intro-lead-in {
+            margin-bottom: 25px;
+            font-family: "Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
+            font-size: 22px;
+            font-style: italic;
+            line-height: 22px;
+        }
+        header .intro-text .intro-heading {
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+            font-size: 50px;
+            font-weight: 700;
+            line-height: 50px;
+        }
+        @media(min-width:768px) {
+            header .intro-text { padding-top: 300px; padding-bottom: 200px; }
+            header .intro-text .intro-lead-in { font-size: 40px; line-height: 40px; }
+            header .intro-text .intro-heading { font-size: 75px; line-height: 75px; }
+        }
+        
+        /* Section Styles */
+        section { padding: 100px 0; }
+        section h2.section-heading { margin-top: 0; margin-bottom: 15px; font-size: 40px; }
+        section h3.section-subheading {
+            margin-bottom: 75px;
+            text-transform: none;
+            font-family: "Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
+            font-size: 16px;
+            font-style: italic;
+            font-weight: 400;
+        }
+        @media(min-width:768px) { section { padding: 150px 0; } }
+        .service-heading { margin: 15px 0; text-transform: none; }
+        
+        /* Product Card Styles */
+        #collections .portfolio-item { margin-bottom: 30px; }
+        #collections .portfolio-link {
+            display: block;
+            position: relative;
+            margin: 0 auto;
+            max-width: 400px;
+            height: 400px;
+            perspective: 1000px;
+        }
+        #collections .portfolio-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        #collections .portfolio-link.flipped .portfolio-card { transform: rotateY(180deg); }
+        #collections .portfolio-front, #collections .portfolio-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        #collections .portfolio-front { background-color: #fff; }
+        #collections .portfolio-front img { width: 100%; height: 100%; object-fit: cover; }
+        #collections .portfolio-back {
+            transform: rotateY(180deg);
+            background: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        #collections .portfolio-back h4 {
+            margin: 10px 0;
+            color: #333;
+            font-size: 22px;
+        }
+        #collections .portfolio-back p.price {
+            font-size: 20px;
+            color: #1ee2e7;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        #collections .portfolio-back ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        #collections .portfolio-back ul li { margin: 8px 0; color: #666; }
+        #collections .portfolio-back .quantity-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+        }
+        #collections .portfolio-back .quantity-controls button {
+            background: #1ee2e7;
+            color: #fff;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #collections .portfolio-back .quantity-controls button:hover {
+            background: #17d0d5;
+            transform: scale(1.05);
+        }
+        #collections .portfolio-back .quantity-controls span {
+            width: 50px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        #collections .portfolio-back .add-to-cart {
+            background: #1ee2e7;
+            color: #fff;
+            border: none;
+            padding: 12px 0;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+        #collections .portfolio-back .add-to-cart:hover {
+            background: #17d0d5;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        #collections .portfolio-caption {
+            margin: 20px auto 0;
+            padding: 15px;
+            max-width: 400px;
+            text-align: center;
+            background-color: #fff;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        
+        /* Cart Styles */
+        #cart .cart-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 20px; 
+        }
+        #cart .cart-table th, #cart .cart-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        #cart .cart-table th { background: #f7f7f7; }
+        #cart .cart-total { font-size: 18px; font-weight: bold; }
+        #cart .checkout-btn {
+            background: #1ee2e7;
+            color: #fff;
+            padding: 15px 30px;
+            border: none;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+        .modal-content .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .modal-content h2 { margin-top: 0; }
+        .modal-content .form-group { margin-bottom: 15px; }
+        .modal-content .form-group label { display: block; margin-bottom: 5px; }
+        .modal-content .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .modal-content .submit-btn {
+            background: #1ee2e7;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1ee2e7;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 4px;
+            display: none;
+            z-index: 2000;
+        }
+        
+        /* Contact Section Styles */
+        section#contact { 
+            background-color: #222; 
+            background-image: url(https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?fit=crop&w=1350&h=900); 
+            background-position: center; 
+            background-repeat: no-repeat; 
+        }
+        section#contact .section-heading { color: #fff; }
+        section#contact .form-group { margin-bottom: 25px; }
+        section#contact .form-group input, section#contact .form-group textarea { padding: 20px; }
+        section#contact .form-group input.form-control { height: auto; }
+        section#contact .form-group textarea.form-control { height: 236px; }
+        section#contact .form-control:focus { border-color: #1ee2e7; box-shadow: none; }
+        
+        /* Footer Styles */
+        footer { padding: 25px 0; text-align: center; }
+        footer span.copyright { text-transform: none; font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif; line-height: 40px; }
+        footer ul.quicklinks { margin-bottom: 0; text-transform: none; font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif; line-height: 40px; }
+        ul.social-buttons { margin-bottom: 0; }
+        ul.social-buttons li a {
+            display: block;
+            width: 40px;
+            height: 40px;
+            border-radius: 100%;
+            font-size: 20px;
+            line-height: 40px;
+            color: #fff;
+            background-color: #222;
+            transition: all .3s;
+        }
+        ul.social-buttons li a:hover, ul.social-buttons li a:focus, ul.social-buttons li a:active { background-color: #1ee2e7; }
+        ::selection { text-shadow: none; background: #1ee2e7; }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .navbar { width: 95%; }
+            .navbar__link { padding: 1rem 0.8rem; font-size: 0.9rem; }
+            .navbar__link i { margin-right: 0.3rem; }
+        }
+    </style>
+</head>
+<body id="page-top" class="index">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <ul class="navbar__menu">
+            <li class="navbar__item active">
+                <a href="#page-top" class="navbar__link">
+                    <i class="fa fa-home"></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li class="navbar__item">
+                <a href="#shop" class="navbar__link">
+                    <i class="fa fa-shopping-bag"></i>
+                    <span>Shop</span>
+                </a>        
+            </li>
+            <li class="navbar__item">
+                <a href="#collections" class="navbar__link">
+                    <i class="fa fa-th-large"></i>
+                    <span>Collections</span>
+                </a>        
+            </li>
+            <li class="navbar__item">
+                <a href="#about" class="navbar__link">
+                    <i class="fa fa-info-circle"></i>
+                    <span>About Us</span>
+                </a>        
+            </li>
+            <li class="navbar__item">
+                <a href="#cart" class="navbar__link">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span>Cart</span>
+                </a>        
+            </li>
+            <li class="navbar__item">
+                <a href="#contact" class="navbar__link">
+                    <i class="fa fa-envelope"></i>
+                    <span>Contact</span>
+                </a>        
+            </li>
+        </ul>
+    </nav>
+    
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="intro-text">
+                <div class="intro-lead-in">Welcome to StepStyle</div>
+                <div class="intro-heading">Find Your Perfect Pair</div>
+                <a href="#shop" class="page-scroll btn btn-xl">Shop Now</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Shop Section -->
+    <section id="shop">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Shop By Category</h2>
+                    <h3 class="section-subheading text-muted">Discover our latest shoe arrivals.</h3>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <a href="#collections" class="category-link" data-category="sneakers">
+                        <span class="fa-stack fa-4x">
+                            <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                            <i class="fa fa-rocket fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <h4 class="service-heading">Sneakers</h4>
+                        <p class="text-muted">Comfortable and stylish sneakers for everyday wear.</p>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#collections" class="category-link" data-category="formal">
+                        <span class="fa-stack fa-4x">
+                            <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                            <i class="fa fa-briefcase fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <h4 class="service-heading">Formal Shoes</h4>
+                        <p class="text-muted">Elegant designs for professional and special occasions.</p>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#collections" class="category-link" data-category="sandals">
+                        <span class="fa-stack fa-4x">
+                            <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                            <i class="fa fa-sun-o fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <h4 class="service-heading">Sandals</h4>
+                        <p class="text-muted">Light and breathable sandals for warm days.</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Collections Section -->
+    <section id="collections" class="bg-light-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Collections</h2>
+                    <h3 class="section-subheading text-muted">Explore our curated shoe collections.</h3>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Urban Sneakers -->
+                <div class="col-md-4 col-sm-6 portfolio-item" data-category="sneakers">
+                    <div class="portfolio-link">
+                        <div class="portfolio-card">
+                            <div class="portfolio-front">
+                                <img src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?fit=crop&w=400&h=400" class="img-responsive" alt="Urban Sneakers">
+                            </div>
+                            <div class="portfolio-back">
+                                <h4>Urban Sneakers</h4>
+                                <p class="price">€89.99</p>
+                                <ul>
+                                    <li><strong>Category:</strong> Sneakers</li>
+                                    <li><strong>Material:</strong> Leather/Synthetic</li>
+                                    <li><strong>Sizes:</strong> 7-12</li>
+                                    <li><strong>Colors:</strong> Black, White, Gray</li>
+                                </ul>
+                                <div class="quantity-controls">
+                                    <button class="minus-btn" data-id="urban-sneakers">-</button>
+                                    <span class="quantity" data-id="urban-sneakers">1</span>
+                                    <button class="plus-btn" data-id="urban-sneakers">+</button>
+                                </div>
+                                <button class="add-to-cart" data-id="urban-sneakers" data-name="Urban Sneakers" data-price="89.99">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portfolio-caption">
+                        <h4>Urban Sneakers</h4>
+                        <p class="text-muted">€89.99</p>
+                    </div>
+                </div>
+                <!-- Comfort Slides -->
+                <div class="col-md-4 col-sm-6 portfolio-item" data-category="sandals">
+                    <div class="portfolio-link">
+                        <div class="portfolio-card">
+                            <div class="portfolio-front">
+                                <img src="https://images.unsplash.com/photo-1603487742131-4160ec999306?fit=crop&w=400&h=400" class="img-responsive" alt="Comfort Slides">
+                            </div>
+                            <div class="portfolio-back">
+                                <h4>Comfort Slides</h4>
+                                <p class="price">€39.99</p>
+                                <ul>
+                                    <li><strong>Category:</strong> Sandals</li>
+                                    <li><strong>Material:</strong> EVA Foam</li>
+                                    <li><strong>Sizes:</strong> 7-13</li>
+                                    <li><strong>Colors:</strong> Black, White, Gray</li>
+                                </ul>
+                                <div class="quantity-controls">
+                                    <button class="minus-btn" data-id="comfort-slides">-</button>
+                                    <span class="quantity" data-id="comfort-slides">1</span>
+                                    <button class="plus-btn" data-id="comfort-slides">+</button>
+                                </div>
+                                <button class="add-to-cart" data-id="comfort-slides" data-name="Comfort Slides" data-price="39.99">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portfolio-caption">
+                        <h4>Comfort Slides</h4>
+                        <p class="text-muted">€39.99</p>
+                    </div>
+                </div>
+                <!-- Runner Pro -->
+                <div class="col-md-4 col-sm-6 portfolio-item" data-category="sneakers">
+                    <div class="portfolio-link">
+                        <div class="portfolio-card">
+                            <div class="portfolio-front">
+                                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?fit=crop&w=400&h=400" class="img-responsive" alt="Runner Pro">
+                            </div>
+                            <div class="portfolio-back">
+                                <h4>Runner Pro</h4>
+                                <p class="price">€109.99</p>
+                                <ul>
+                                    <li><strong>Category:</strong> Athletic</li>
+                                    <li><strong>Material:</strong> Mesh/Synthetic</li>
+                                    <li><strong>Sizes:</strong> 7-13</li>
+                                    <li><strong>Colors:</strong> Red, Blue, Black</li>
+                                </ul>
+                                <div class="quantity-controls">
+                                    <button class="minus-btn" data-id="runner-pro">-</button>
+                                    <span class="quantity" data-id="runner-pro">1</span>
+                                    <button class="plus-btn" data-id="runner-pro">+</button>
+                                </div>
+                                <button class="add-to-cart" data-id="runner-pro" data-name="Runner Pro" data-price="109.99">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portfolio-caption">
+                        <h4>Runner Pro</h4>
+                        <p class="text-muted">€109.99</p>
+                    </div>
+                </div>
+                <!-- Classic Oxford -->
+                <div class="col-md-4 col-sm-6 portfolio-item" data-category="formal">
+                    <div class="portfolio-link">
+                        <div class="portfolio-card">
+                            <div class="portfolio-front">
+                                <img src="https://images.unsplash.com/photo-1614252369475-531eba835eb1?fit=crop&w=400&h=400" class="img-responsive" alt="Classic Oxford">
+                            </div>
+                            <div class="portfolio-back">
+                                <h4>Classic Oxford</h4>
+                                <p class="price">€129.99</p>
+                                <ul>
+                                    <li><strong>Category:</strong> Formal</li>
+                                    <li><strong>Material:</strong> Premium Leather</li>
+                                    <li><strong>Sizes:</strong> 8-12</li>
+                                    <li><strong>Colors:</strong> Black, Brown</li>
+                                </ul>
+                                <div class="quantity-controls">
+                                    <button class="minus-btn" data-id="classic-oxford">-</button>
+                                    <span class="quantity" data-id="classic-oxford">1</span>
+                                    <button class="plus-btn" data-id="classic-oxford">+</button>
+                                </div>
+                                <button class="add-to-cart" data-id="classic-oxford" data-name="Classic Oxford" data-price="129.99">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portfolio-caption">
+                        <h4>Classic Oxford</h4>
+                        <p class="text-muted">€129.99</p>
+                    </div>
+                </div>
+                <!-- Designer Loafers -->
+                <div class="col-md-4 col-sm-6 portfolio-item" data-category="formal">
+                    <div class="portfolio-link">
+                        <div class="portfolio-card">
+                            <div class="portfolio-front">
+                                <img src="https://images.unsplash.com/photo-1533867617858-e7b97e060509?fit=crop&w=400&h=400" class="img-responsive" alt="Designer Loafers">
+                            </div>
+                            <div class="portfolio-back">
+                                <h4>Designer Loafers</h4>
+                                <p class="price">€119.99</p>
+                                <ul>
+                                    <li><strong>Category:</strong> Formal</li>
+                                    <li><strong>Material:</strong> Italian Leather</li>
+                                    <li><strong>Sizes:</strong> 7-12</li>
+                                    <li><strong>Colors:</strong> Brown, Tan, Navy</li>
+                                </ul>
+                                <div class="quantity-controls">
+                                    <button class="minus-btn" data-id="designer-loafers">-</button>
+                                    <span class="quantity" data-id="designer-loafers">1</span>
+                                    <button class="plus-btn" data-id="designer-loafers">+</button>
+                                </div>
+                                <button class="add-to-cart" data-id="designer-loafers" data-name="Designer Loafers" data-price="119.99">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portfolio-caption">
+                        <h4>Designer Loafers</h4>
+                        <p class="text-muted">€119.99</p>
+                    </div>
+                </div>
+                <!-- Beach Sandals -->
+                <div class="col-md-4 col-sm-6 portfolio-item" data-category="sandals">
+                    <div class="portfolio-link">
+                        <div class="portfolio-card">
+                            <div class="portfolio-front">
+                                <img src="https://images.unsplash.com/photo-1612295892167-72af3cef16f2?fit=crop&w=400&h=400" class="img-responsive" alt="Beach Sandals">
+                            </div>
+                            <div class="portfolio-back">
+                                <h4>Beach Sandals</h4>
+                                <p class="price">€49.99</p>
+                                <ul>
+                                    <li><strong>Category:</strong> Sandals</li>
+                                    <li><strong>Material:</strong> Rubber/Fabric</li>
+                                    <li><strong>Sizes:</strong> 6-12</li>
+                                    <li><strong>Colors:</strong> Blue, Beige, Black</li>
+                                </ul>
+                                <div class="quantity-controls">
+                                    <button class="minus-btn" data-id="beach-sandals">-</button>
+                                    <span class="quantity" data-id="beach-sandals">1</span>
+                                    <button class="plus-btn" data-id="beach-sandals">+</button>
+                                </div>
+                                <button class="add-to-cart" data-id="beach-sandals" data-name="Beach Sandals" data-price="49.99">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portfolio-caption">
+                        <h4>Beach Sandals</h4>
+                        <p class="text-muted">€49.99</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Cart Section -->
+    <section id="cart">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Your Cart</h2>
+                    <h3 class="section-subheading text-muted">Review your selected items.</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <table class="cart-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cart-items"></tbody>
+                    </table>
+                    <p class="cart-total">Total: €<span id="cart-total">0.00</span></p>
+                    <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">About Us</h2>
+                    <h3 class="section-subheading text-muted">Our passion for quality footwear.</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <p class="large text-muted">StepStyle was founded with a mission to provide stylish, comfortable, and durable shoes for every occasion. We carefully curate our collections to ensure quality and satisfaction. Join us in stepping into style!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Contact Us</h2>
+                    <h3 class="section-subheading text-muted">Get in touch for inquiries or support.</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <form action="https://formspree.io/f/xbjnekyq" method="POST" id="contact-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Your Name *" id="name" name="name" required>
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" class="form-control" placeholder="Your Email *" id="email" name="email" required>
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Subject *" id="subject" name="subject" required>
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <textarea class="form-control" placeholder="Your Message *" id="message" name="message" required></textarea>
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 text-center">
+                                <button type="submit" class="btn btn-xl">Send Message</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <span class="copyright">Copyright © StepStyle 2025</span>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline social-buttons">
+                        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline quicklinks">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Checkout Modal -->
+    <div class="modal" id="checkoutModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">×</span>
+            <h2>Order Information</h2>
+            <form id="checkoutForm">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" class="form-control" pattern="\\+?[0-9]{10,15}" required>
+                </div>
+                <div class="form-group">
+                    <label for="emailCheckout">Email</label>
+                    <input type="email" id="emailCheckout" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="deliveryDate">Delivery Date</label>
+                    <input type="date" id="deliveryDate" name="deliveryDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="deliveryTime">Delivery Time</label>
+                    <input type="time" id="deliveryTime" name="deliveryTime" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="clientMessage">Message</label>
+                    <textarea id="clientMessage" name="clientMessage" class="form-control" rows="3" placeholder="Any special instructions for delivery?"></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Confirm Order</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">Order placed successfully!</div>
+    
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation active state management
+            const navItems = document.querySelectorAll('.navbar__item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    navItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Smooth scrolling for page links
+            document.querySelectorAll('a.page-scroll, a.navbar__link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.hash !== '') {
+                        e.preventDefault();
+                        const hash = this.hash;
+                        const target = document.querySelector(hash);
+                        if (target) {
+                            window.scrollTo({
+                                top: target.offsetTop,
+                                behavior: 'smooth'
+                            });
+                            history.pushState(null, null, hash);
+                        }
+                    }
+                });
+            });
+            
+            // Portfolio card flip functionality
+            const portfolioLinks = document.querySelectorAll('.portfolio-link');
+            let currentFlipped = null;
+            
+            portfolioLinks.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (e.target.classList.contains('minus-btn') || 
+                        e.target.classList.contains('plus-btn') || 
+                        e.target.classList.contains('add-to-cart')) {
+                        return;
+                    }
+                    if (currentFlipped && currentFlipped !== this) {
+                        currentFlipped.classList.remove('flipped');
+                    }
+                    this.classList.toggle('flipped');
+                    if (this.classList.contains('flipped')) {
+                        currentFlipped = this;
+                    } else {
+                        currentFlipped = null;
+                    }
+                });
+            });
+            
+            // Category filtering
+            const categoryLinks = document.querySelectorAll('.category-link');
+            categoryLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const category = this.getAttribute('data-category');
+                    const portfolioItems = document.querySelectorAll('.portfolio-item');
+                    portfolioItems.forEach(item => {
+                        if (category === 'all' || item.getAttribute('data-category') === category) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Cart functionality
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            // Quantity controls
+            document.querySelectorAll('.minus-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = button.dataset.id;
+                    const quantitySpan = document.querySelector(`.quantity[data-id="${id}"]`);
+                    let quantity = parseInt(quantitySpan.textContent);
+                    if (quantity > 1) {
+                        quantitySpan.textContent = --quantity;
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.plus-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = button.dataset.id;
+                    const quantitySpan = document.querySelector(`.quantity[data-id="${id}"]`);
+                    let quantity = parseInt(quantitySpan.textContent);
+                    quantitySpan.textContent = ++quantity;
+                });
+            });
+            
+            // Add to cart
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = button.dataset.id;
+                    const name = button.dataset.name;
+                    const price = parseFloat(button.dataset.price);
+                    const quantity = parseInt(document.querySelector(`.quantity[data-id="${id}"]`).textContent);
+                    
+                    const existingItem = cart.find(item => item.id === id);
+                    if (existingItem) {
+                        existingItem.quantity += quantity;
+                    } else {
+                        cart.push({ id, name, price, quantity });
+                    }
+                    
+                    updateCartDisplay();
+                    showNotification(`${name} added to cart!`);
+                });
+            });
+            
+            // Update cart display
+            function updateCartDisplay() {
+                const cartItems = document.getElementById('cart-items');
+                const cartTotal = document.getElementById('cart-total');
+                cartItems.innerHTML = '';
+                
+                let total = 0;
+                
+                cart.forEach((item, index) => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+                    
+                    cartItems.innerHTML += `
+                        <tr>
+                            <td>${item.name}</td>
+                            <td>€${item.price.toFixed(2)}</td>
+                            <td>${item.quantity}</td>
+                            <td>€${itemTotal.toFixed(2)}</td>
+                            <td><button class="remove-item" data-index="${index}">✕</button></td>
+                        </tr>
+                    `;
+                });
+                
+                cartTotal.textContent = total.toFixed(2);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                
+                // Add event listeners to remove buttons
+                document.querySelectorAll('.remove-item').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const index = parseInt(this.dataset.index);
+                        const removedItem = cart[index];
+                        cart.splice(index, 1);
+                        updateCartDisplay();
+                        showNotification(`${removedItem.name} removed from cart`);
+                    });
+                });
+            }
+            
+            // Checkout functionality
+            const checkoutBtn = document.getElementById('checkout-btn');
+            const checkoutModal = document.getElementById('checkoutModal');
+            const closeModal = document.getElementById('closeModal');
+            const checkoutForm = document.getElementById('checkoutForm');
+            
+            checkoutBtn.addEventListener('click', () => {
+                if (cart.length === 0) {
+                    showNotification('Your cart is empty!');
+                    return;
+                }
+                checkoutModal.style.display = 'block';
+            });
+            
+            closeModal.addEventListener('click', () => {
+                checkoutModal.style.display = 'none';
+            });
+            
+            window.addEventListener('click', (e) => {
+                if (e.target === checkoutModal) {
+                    checkoutModal.style.display = 'none';
+                }
+            });
+            
+            checkoutForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const firstName = document.getElementById('firstName').value;
+                const phone = document.getElementById('phone').value;
+                const email = document.getElementById('emailCheckout').value;
+                const address = document.getElementById('address').value;
+                const deliveryDate = document.getElementById('deliveryDate').value;
+                const deliveryTime = document.getElementById('deliveryTime').value;
+                const clientMessage = document.getElementById('clientMessage').value;
+                
+                let summary = `StepStyle Order\n\nClient: ${firstName}\nPhone: ${phone}\nEmail: ${email}\nAddress: ${address}\nDelivery Date: ${deliveryDate}\nDelivery Time: ${deliveryTime}\n`;
+                
+                if (clientMessage) {
+                    summary += `Message: ${clientMessage}\n`;
+                }
+                
+                summary += `\nItems:\n`;
+                let total = 0;
+                
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    summary += `${item.name} x${item.quantity}: €${itemTotal.toFixed(2)}\n`;
+                    total += itemTotal;
+                });
+                
+                summary += `\nTotal: €${total.toFixed(2)}`;
+                
+                const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+                if (isMobile) {
+                    const smsNumber = '+33644762721';
+                    const encodedSummary = encodeURIComponent(summary);
+                    window.location.href = `sms:${smsNumber}?body=${encodedSummary}`;
+                } else {
+                    const emailRecipient = 'contact@stepstyle.com';
+                    const subject = encodeURIComponent('New StepStyle Order');
+                    const body = encodeURIComponent(summary);
+                    window.location.href = `mailto:${emailRecipient}?subject=${subject}&body=${body}`;
+                }
+                
+                showNotification('Order placed successfully! A summary has been sent.');
+                checkoutModal.style.display = 'none';
+                cart = [];
+                updateCartDisplay();
+                localStorage.removeItem('cart');
+                checkoutForm.reset();
+            });
+            
+            // Notification functionality
+            function showNotification(message) {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.style.display = 'block';
+                
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
+            }
+            
+            // Initialize cart on page load
+            updateCartDisplay();
+        });
+    </script>
+</body>
+</html>
