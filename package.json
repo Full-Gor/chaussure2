@@ -1,18 +1,25 @@
 {
     "name": "stepstyle",
     "version": "1.0.0",
-    "description": "E-commerce de chaussures",
+    "description": "E-commerce platform for shoes",
     "main": "index.js",
     "scripts": {
         "dev": "vercel dev",
-        "build": "vercel build",
-        "start": "vercel start"
+        "build": "echo 'No build step required for static site'",
+        "start": "vercel dev"
     },
+    "keywords": [
+        "e-commerce",
+        "shoes",
+        "fashion"
+    ],
+    "author": "",
+    "license": "MIT",
     "dependencies": {
-        "stripe": "^12.0.0",
-        "dotenv": "^16.0.0"
+        "@stripe/stripe-js": "^1.54.0",
+        "stripe": "^12.0.0"
     },
     "devDependencies": {
-        "vercel": "^32.0.0"
+        "vercel": "^32.7.2"
     }
 }
