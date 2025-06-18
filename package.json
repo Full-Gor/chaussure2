@@ -1,0 +1,18 @@
+{
+    "name": "stepstyle",
+    "version": "1.0.0",
+    "description": "E-commerce de chaussures",
+    "main": "index.js",
+    "scripts": {
+        "dev": "vercel dev",
+        "build": "vercel build",
+        "start": "vercel start"
+    },
+    "dependencies": {
+        "stripe": "^12.0.0",
+        "dotenv": "^16.0.0"
+    },
+    "devDependencies": {
+        "vercel": "^32.0.0"
+    }
+}

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https: 'unsafe-inline' 'unsafe-eval' https://js.stripe.com; style-src 'self' https: 'unsafe-inline'; img-src 'self' https: data:; font-src 'self' https: data:; connect-src 'self' https://api.stripe.com;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <title>Panier - StepStyle</title>
+    
+    <!-- Styles -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+    
+    <!-- Stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
+    
+    <style>
+        .cart-page {
+            padding-top: 100px;
+            min-height: calc(100vh - 200px);
+        }
+        
+        .cart-table {
+            width: 100%;
+            margin-bottom: 30px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        
+        .cart-table th,
+        .cart-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+        
+        .cart-table img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quantity-btn {
+            background: #1ee2e7;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .quantity-btn:hover {
+            background: #17d0d5;
+            transform: scale(1.1);
+        }
+        
+        .remove-btn {
+            color: #dc3545;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .remove-btn:hover {
+            color: #c82333;
+            transform: scale(1.1);
+        }
+        
+        .cart-summary {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        
+        .cart-summary h3 {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #1ee2e7;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .summary-total {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 2px solid #1ee2e7;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        #stripe-button {
+            width: 100%;
+            padding: 15px;
+            background: #1ee2e7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        #stripe-button:hover {
+            background: #17d0d5;
+            transform: translateY(-2px);
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        
+        .empty-cart i {
+            font-size: 50px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+        
+        .continue-shopping {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #1ee2e7;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .continue-shopping:hover {
+            background: #17d0d5;
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Include Header -->
+    <div id="header-container"></div>
+    
+    <!-- Cart Section -->
+    <section class="cart-page">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Votre Panier</h2>
+                    <h3 class="section-subheading text-muted">Vérifiez vos articles avant de procéder au paiement.</h3>
+                </div>
+            </div>
+            
+            <div id="cart-content">
+                <!-- Le contenu du panier sera injecté ici dynamiquement -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- Include Footer -->
+    <div id="footer-container"></div>
+    
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <script type="module">
+        import { auth } from '../js/auth.js';
+        
+        // Initialisation de Stripe
+        const stripe = Stripe('votre_clé_publique_stripe');
+        
+        // Charger les composants
+        fetch('../components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+            });
+            
+        fetch('../components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-container').innerHTML = data;
+            });
+        
+        // Fonction pour mettre à jour l'affichage du panier
+        function updateCartDisplay() {
+            const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
+            const cartContent = document.getElementById('cart-content');
+            
+            if (cartItems.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="fa fa-shopping-cart"></i>
+                        <h3>Votre panier est vide</h3>
+                        <p>Découvrez nos produits et ajoutez-les à votre panier</p>
+                        <a href="../index.html#collections" class="continue-shopping">
+                            Continuer vos achats
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            let total = 0;
+            const tableHTML = `
+                <div class="row">
+                    <div class="col-md-8">
+                        <table class="cart-table">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Prix</th>
+                                    <th>Quantité</th>
+                                    <th>Total</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${cartItems.map(item => {
+                                    const itemTotal = item.price * item.quantity;
+                                    total += itemTotal;
+                                    return `
+                                        <tr>
+                                            <td>
+                                                <img src="${item.image}" alt="${item.name}">
+                                                <span>${item.name}</span>
+                                            </td>
+                                            <td>€${item.price.toFixed(2)}</td>
+                                            <td>
+                                                <div class="quantity-control">
+                                                    <button class="quantity-btn minus" data-id="${item.id}">-</button>
+                                                    <span>${item.quantity}</span>
+                                                    <button class="quantity-btn plus" data-id="${item.id}">+</button>
+                                                </div>
+                                            </td>
+                                            <td>€${itemTotal.toFixed(2)}</td>
+                                            <td>
+                                                <button class="remove-btn" data-id="${item.id}">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="cart-summary">
+                            <h3>Résumé de la commande</h3>
+                            <div class="summary-item">
+                                <span>Sous-total</span>
+                                <span>€${total.toFixed(2)}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Livraison</span>
+                                <span>Gratuite</span>
+                            </div>
+                            <div class="summary-total">
+                                <span>Total</span>
+                                <span>€${total.toFixed(2)}</span>
+                            </div>
+                            <button id="stripe-button">
+                                Procéder au paiement
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            cartContent.innerHTML = tableHTML;
+            
+            // Mettre à jour le compteur dans la navbar
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount) {
+                cartCount.textContent = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+            }
+            
+            // Event listeners pour les boutons
+            document.querySelectorAll('.quantity-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const isPlus = this.classList.contains('plus');
+                    updateQuantity(id, isPlus);
+                });
+            });
+            
+            document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    removeItem(this.dataset.id);
+                });
+            });
+            
+            document.getElementById('stripe-button').addEventListener('click', async function() {
+                try {
+                    const response = await fetch('/api/create-checkout-session', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            items: cartItems,
+                            userId: auth.currentUser?.uid
+                        })
+                    });
+                    
+                    const session = await response.json();
+                    
+                    // Rediriger vers Stripe Checkout
+                    const result = await stripe.redirectToCheckout({
+                        sessionId: session.id
+                    });
+                    
+                    if (result.error) {
+                        alert(result.error.message);
+                    }
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue lors de la création de la session de paiement.');
+                }
+            });
+        }
+        
+        // Fonction pour mettre à jour la quantité
+        function updateQuantity(id, isPlus) {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const itemIndex = cart.findIndex(item => item.id === id);
+            
+            if (itemIndex !== -1) {
+                if (isPlus) {
+                    cart[itemIndex].quantity++;
+                } else if (cart[itemIndex].quantity > 1) {
+                    cart[itemIndex].quantity--;
+                }
+                
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartDisplay();
+            }
+        }
+        
+        // Fonction pour supprimer un article
+        function removeItem(id) {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const newCart = cart.filter(item => item.id !== id);
+            localStorage.setItem('cart', JSON.stringify(newCart));
+            updateCartDisplay();
+        }
+        
+        // Initialiser l'affichage
+        document.addEventListener('DOMContentLoaded', updateCartDisplay);
+    </script>
+</body>
+</html> 

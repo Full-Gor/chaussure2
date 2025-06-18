@@ -1,3 +1,92 @@
+// Gestion du panier avec localStorage
+export class Cart {
+    constructor() {
+        this.items = JSON.parse(localStorage.getItem('cart') || '[]');
+        this.updateDisplay();
+    }
+    
+    // Ajouter un produit au panier
+    addItem(product) {
+        const existingItem = this.items.find(item => item.id === product.id);
+        
+        if (existingItem) {
+            existingItem.quantity += product.quantity || 1;
+        } else {
+            this.items.push({
+                ...product,
+                quantity: product.quantity || 1
+            });
+        }
+        
+        this.save();
+        this.updateDisplay();
+    }
+    
+    // Mettre à jour la quantité
+    updateQuantity(id, quantity) {
+        const item = this.items.find(item => item.id === id);
+        if (item) {
+            item.quantity = quantity;
+            if (item.quantity <= 0) {
+                this.removeItem(id);
+            } else {
+                this.save();
+                this.updateDisplay();
+            }
+        }
+    }
+    
+    // Supprimer un produit
+    removeItem(id) {
+        this.items = this.items.filter(item => item.id !== id);
+        this.save();
+        this.updateDisplay();
+    }
+    
+    // Vider le panier
+    clear() {
+        this.items = [];
+        this.save();
+        this.updateDisplay();
+    }
+    
+    // Calculer le total
+    getTotal() {
+        return this.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+    }
+    
+    // Obtenir le nombre total d'articles
+    getCount() {
+        return this.items.reduce((count, item) => count + item.quantity, 0);
+    }
+    
+    // Sauvegarder dans localStorage
+    save() {
+        localStorage.setItem('cart', JSON.stringify(this.items));
+    }
+    
+    // Mettre à jour l'affichage
+    updateDisplay() {
+        // Mettre à jour le compteur dans la navbar
+        const cartCount = document.getElementById('cart-count');
+        if (cartCount) {
+            cartCount.textContent = this.getCount();
+        }
+        
+        // Émettre un événement pour notifier les autres composants
+        window.dispatchEvent(new CustomEvent('cart-updated', {
+            detail: {
+                items: this.items,
+                total: this.getTotal(),
+                count: this.getCount()
+            }
+        }));
+    }
+}
+
+// Créer une instance unique du panier
+export const cart = new Cart();
+
 // Cart functionality
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 

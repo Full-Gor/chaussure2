@@ -1,56 +1,197 @@
 <!-- Navigation -->
 <nav class="navbar">
     <ul class="navbar__menu">
-        <li class="navbar__item"><a href="index.html" class="navbar__link"><i class="fa fa-home"></i> Accueil</a></li>
-        <li class="navbar__item"><a href="#shop" class="navbar__link"><i class="fa fa-shopping-bag"></i> Boutique</a></li>
-        <li class="navbar__item"><a href="#collections" class="navbar__link"><i class="fa fa-tags"></i> Collections</a></li>
-        <li class="navbar__item"><a href="#about" class="navbar__link"><i class="fa fa-info-circle"></i> À propos</a></li>
-        <li class="navbar__item"><a href="#contact" class="navbar__link"><i class="fa fa-envelope"></i> Contact</a></li>
-        <li class="navbar__item"><a href="#cart" class="navbar__link"><i class="fa fa-shopping-cart"></i> Panier <span id="cart-count">0</span></a></li>
-        <!-- Liens d'authentification -->
-        <li class="navbar__item" id="auth-links">
-            <a href="pages/auth/login.html" class="navbar__link"><i class="fa fa-sign-in"></i> Connexion</a>
+        <li class="navbar__item">
+            <a class="navbar__link" href="/">
+                <i class="fa fa-home"></i>
+                Accueil
+            </a>
         </li>
-        <li class="navbar__item" id="user-links" style="display: none;">
-            <a href="pages/user/dashboard.html" class="navbar__link"><i class="fa fa-user"></i> Mon compte</a>
+        <li class="navbar__item">
+            <a class="navbar__link" href="#collections">
+                <i class="fa fa-shopping-bag"></i>
+                Collections
+            </a>
         </li>
-        <li class="navbar__item" id="admin-links" style="display: none;">
-            <a href="pages/admin/dashboard.html" class="navbar__link"><i class="fa fa-cog"></i> Administration</a>
+        <li class="navbar__item">
+            <a class="navbar__link" href="#about">
+                <i class="fa fa-info-circle"></i>
+                À propos
+            </a>
+        </li>
+        <li class="navbar__item">
+            <a class="navbar__link" href="#contact">
+                <i class="fa fa-envelope"></i>
+                Contact
+            </a>
+        </li>
+        <li class="navbar__item">
+            <a class="navbar__link" href="/pages/cart.html">
+                <i class="fa fa-shopping-cart"></i>
+                Panier
+                <span id="cart-count" class="badge">0</span>
+            </a>
+        </li>
+        <li class="navbar__item" id="auth-container">
+            <!-- Le contenu sera injecté dynamiquement -->
         </li>
     </ul>
 </nav>
-
-<!-- Script pour gérer l'affichage des liens selon l'état de connexion -->
-<script type="module">
-    import { onAuthStateChanged } from '../js/auth.js';
-    
-    onAuthStateChanged((user) => {
-        const authLinks = document.getElementById('auth-links');
-        const userLinks = document.getElementById('user-links');
-        const adminLinks = document.getElementById('admin-links');
-        
-        if (user) {
-            authLinks.style.display = 'none';
-            userLinks.style.display = 'block';
-            // Vérifier si l'utilisateur est admin
-            if (user.role === 'admin') {
-                adminLinks.style.display = 'block';
-            }
-        } else {
-            authLinks.style.display = 'block';
-            userLinks.style.display = 'none';
-            adminLinks.style.display = 'none';
-        }
-    });
-</script>
 
 <!-- Header -->
 <header>
     <div class="container">
         <div class="intro-text">
-            <div class="intro-lead-in">Welcome to StepStyle</div>
-            <div class="intro-heading">Find Your Perfect Pair</div>
-            <a href="#shop" class="page-scroll btn btn-xl">Shop Now</a>
+            <div class="intro-lead-in">Bienvenue chez StepStyle</div>
+            <div class="intro-heading">Découvrez notre collection</div>
+            <a href="#collections" class="btn btn-xl">Voir les produits</a>
         </div>
     </div>
-</header> 
+</header>
+
+<style>
+    .badge {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: #1ee2e7;
+        color: white;
+        border-radius: 50%;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        min-width: 1.5rem;
+        text-align: center;
+    }
+    
+    #auth-container {
+        margin-left: auto;
+    }
+    
+    .auth-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .auth-buttons button {
+        background: none;
+        border: 2px solid #1ee2e7;
+        color: #1ee2e7;
+        padding: 5px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .auth-buttons button:hover {
+        background: #1ee2e7;
+        color: white;
+    }
+    
+    .user-menu {
+        position: relative;
+    }
+    
+    .user-menu-content {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: white;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        border-radius: 4px;
+        padding: 10px 0;
+        min-width: 150px;
+    }
+    
+    .user-menu:hover .user-menu-content {
+        display: block;
+    }
+    
+    .user-menu-item {
+        padding: 8px 15px;
+        color: #333;
+        text-decoration: none;
+        display: block;
+        transition: background 0.3s ease;
+    }
+    
+    .user-menu-item:hover {
+        background: #f5f5f5;
+        color: #1ee2e7;
+    }
+</style>
+
+<script type="module">
+    import { auth } from '../js/auth.js';
+    import { cart } from '../js/cart.js';
+    
+    // Mettre à jour l'affichage du panier
+    function updateCartDisplay() {
+        const cartCount = document.getElementById('cart-count');
+        if (cartCount) {
+            cartCount.textContent = cart.getCount();
+        }
+    }
+    
+    // Écouter les mises à jour du panier
+    window.addEventListener('cart-updated', (event) => {
+        updateCartDisplay();
+    });
+    
+    // Mettre à jour l'affichage de l'authentification
+    function updateAuthDisplay() {
+        const authContainer = document.getElementById('auth-container');
+        
+        if (auth.currentUser) {
+            authContainer.innerHTML = `
+                <div class="user-menu">
+                    <a class="navbar__link" href="#">
+                        <i class="fa fa-user"></i>
+                        ${auth.currentUser.email}
+                    </a>
+                    <div class="user-menu-content">
+                        <a href="/pages/user/profile.html" class="user-menu-item">
+                            <i class="fa fa-user-circle"></i> Profil
+                        </a>
+                        <a href="/pages/user/orders.html" class="user-menu-item">
+                            <i class="fa fa-list"></i> Commandes
+                        </a>
+                        ${auth.currentUser.isAdmin ? `
+                            <a href="/pages/admin/dashboard.html" class="user-menu-item">
+                                <i class="fa fa-dashboard"></i> Admin
+                            </a>
+                        ` : ''}
+                        <a href="#" class="user-menu-item" id="logout-btn">
+                            <i class="fa fa-sign-out"></i> Déconnexion
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('logout-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                auth.signOut();
+            });
+        } else {
+            authContainer.innerHTML = `
+                <div class="auth-buttons">
+                    <button onclick="window.location.href='/pages/auth/login.html'">
+                        Connexion
+                    </button>
+                    <button onclick="window.location.href='/pages/auth/register.html'">
+                        Inscription
+                    </button>
+                </div>
+            `;
+        }
+    }
+    
+    // Écouter les changements d'authentification
+    auth.onAuthStateChanged(updateAuthDisplay);
+    
+    // Initialiser l'affichage
+    document.addEventListener('DOMContentLoaded', () => {
+        updateCartDisplay();
+        updateAuthDisplay();
+    });
+</script> 

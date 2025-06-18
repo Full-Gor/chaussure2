@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https: 'unsafe-inline' 'unsafe-eval'; style-src 'self' https: 'unsafe-inline'; img-src 'self' https: data:; font-src 'self' https: data:;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <title>Commande Confirmée - StepStyle</title>
+    
+    <!-- Styles -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+    
+    <style>
+        .success-page {
+            padding-top: 100px;
+            min-height: calc(100vh - 200px);
+            text-align: center;
+        }
+        
+        .success-icon {
+            font-size: 80px;
+            color: #28a745;
+            margin-bottom: 30px;
+        }
+        
+        .success-message {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        
+        .order-details {
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .order-details h3 {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #1ee2e7;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .continue-shopping {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: #1ee2e7;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .continue-shopping:hover {
+            background: #17d0d5;
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Include Header -->
+    <div id="header-container"></div>
+    
+    <!-- Success Section -->
+    <section class="success-page">
+        <div class="container">
+            <div class="success-message">
+                <i class="fa fa-check-circle success-icon"></i>
+                <h2>Merci pour votre commande !</h2>
+                <p>Votre paiement a été confirmé et votre commande est en cours de traitement.</p>
+                
+                <div class="order-details">
+                    <h3>Détails de la commande</h3>
+                    <div id="order-info">
+                        <!-- Les détails de la commande seront injectés ici -->
+                    </div>
+                </div>
+                
+                <a href="../index.html#collections" class="continue-shopping">
+                    Continuer vos achats
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Include Footer -->
+    <div id="footer-container"></div>
+    
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <script type="module">
+        import { cart } from '../js/cart.js';
+        
+        // Charger les composants
+        fetch('../components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+            });
+            
+        fetch('../components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-container').innerHTML = data;
+            });
+            
+        // Récupérer les détails de la commande
+        async function getOrderDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sessionId = urlParams.get('session_id');
+            
+            if (sessionId) {
+                try {
+                    const response = await fetch(`/api/order-details?session_id=${sessionId}`);
+                    const orderDetails = await response.json();
+                    
+                    // Afficher les détails de la commande
+                    document.getElementById('order-info').innerHTML = `
+                        <div class="detail-item">
+                            <span>Numéro de commande:</span>
+                            <span>${orderDetails.orderId}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Date:</span>
+                            <span>${new Date(orderDetails.created).toLocaleDateString()}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Total:</span>
+                            <span>€${orderDetails.amount_total / 100}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Email de confirmation:</span>
+                            <span>${orderDetails.customer_email}</span>
+                        </div>
+                    `;
+                    
+                    // Vider le panier
+                    cart.clear();
+                    
+                } catch (error) {
+                    console.error('Error fetching order details:', error);
+                }
+            }
+        }
+        
+        // Initialiser la page
+        document.addEventListener('DOMContentLoaded', getOrderDetails);
+    </script>
+</body>
+</html> 
