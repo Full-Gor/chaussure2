@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tableau de bord - StepStyle</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto+Slab:400,300,700|Kaushan+Script|Droid+Serif:400,400i" rel="stylesheet">
+    <link href="../../css/styles.css" rel="stylesheet">
+    <style>
+        .dashboard-container {
+            padding: 40px 0;
+        }
+        .dashboard-header {
+            margin-bottom: 30px;
+        }
+        .dashboard-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .dashboard-card h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .order-item {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        .profile-info {
+            margin-bottom: 20px;
+        }
+        .profile-info p {
+            margin-bottom: 10px;
+        }
+        .profile-info strong {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div id="header"></div>
+
+    <div class="container dashboard-container">
+        <div class="dashboard-header">
+            <h1>Tableau de bord</h1>
+            <p>Bienvenue sur votre espace personnel</p>
+        </div>
+
+        <div class="row">
+            <!-- Profil -->
+            <div class="col-md-4">
+                <div class="dashboard-card">
+                    <h3>Profil</h3>
+                    <div class="profile-info" id="profileInfo">
+                        <p><strong>Nom:</strong> <span id="userName"></span></p>
+                        <p><strong>Email:</strong> <span id="userEmail"></span></p>
+                    </div>
+                    <button class="btn btn-primary" id="editProfileBtn">Modifier le profil</button>
+                </div>
+            </div>
+
+            <!-- Commandes récentes -->
+            <div class="col-md-8">
+                <div class="dashboard-card">
+                    <h3>Commandes récentes</h3>
+                    <div id="recentOrders">
+                        <!-- Les commandes seront ajoutées ici dynamiquement -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- JavaScript -->
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js"></script>
+    <script type="module">
+        import { auth, db } from '../../js/config.js';
+        import { getUserData, updateUserProfile } from '../../js/auth.js';
+        import { showNotification } from '../../js/cart.js';
+        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js';
+        import { collection, query, where, orderBy, getDocs } from 'https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js';
+
+        // Charger le header et le footer
+        document.getElementById('header').innerHTML = await fetch('../../components/header.html').then(r => r.text());
+        document.getElementById('footer').innerHTML = await fetch('../../components/footer.html').then(r => r.text());
+
+        // Vérifier l'authentification
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const userData = await getUserData(user.uid);
+                    document.getElementById('userName').textContent = `${userData.firstName} ${userData.lastName}`;
+                    document.getElementById('userEmail').textContent = user.email;
+
+                    // Charger les commandes récentes
+                    const ordersQuery = query(
+                        collection(db, 'orders'),
+                        where('userId', '==', user.uid),
+                        orderBy('createdAt', 'desc')
+                    );
+                    const ordersSnapshot = await getDocs(ordersQuery);
+                    const ordersContainer = document.getElementById('recentOrders');
+                    ordersContainer.innerHTML = '';
+
+                    if (ordersSnapshot.empty) {
+                        ordersContainer.innerHTML = '<p>Aucune commande récente</p>';
+                    } else {
+                        ordersSnapshot.forEach(doc => {
+                            const order = doc.data();
+                            const orderDate = new Date(order.createdAt.toDate()).toLocaleDateString();
+                            const orderHtml = `
+                                <div class="order-item">
+                                    <p><strong>Commande #${doc.id}</strong></p>
+                                    <p>Date: ${orderDate}</p>
+                                    <p>Total: ${order.total}€</p>
+                                    <p>Statut: ${order.status}</p>
+                                </div>
+                            `;
+                            ordersContainer.innerHTML += orderHtml;
+                        });
+                    }
+                } catch (error) {
+                    showNotification(error.message, 'error');
+                }
+            } else {
+                window.location.href = '../auth/login.html';
+            }
+        });
+
+        // Gérer la modification du profil
+        document.getElementById('editProfileBtn').addEventListener('click', () => {
+            // Implémenter la logique de modification du profil
+            showNotification('Fonctionnalité à venir', 'info');
+        });
+    </script>
+</body>
+</html> 

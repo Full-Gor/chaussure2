@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestion des utilisateurs - StepStyle</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto+Slab:400,300,700|Kaushan+Script|Droid+Serif:400,400i" rel="stylesheet">
+    <link href="../../css/styles.css" rel="stylesheet">
+    <style>
+        .users-container {
+            padding: 40px 0;
+        }
+        .users-header {
+            margin-bottom: 30px;
+        }
+        .user-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .user-details {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .user-item:last-child {
+            border-bottom: none;
+        }
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #1ee2e7;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 15px;
+        }
+        .user-info {
+            flex-grow: 1;
+        }
+        .user-role {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .role-admin {
+            background: #c3e6cb;
+            color: #155724;
+        }
+        .role-user {
+            background: #b8daff;
+            color: #004085;
+        }
+        .filter-section {
+            margin-bottom: 20px;
+        }
+        .user-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            background: #fff;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .stat-item .number {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1ee2e7;
+        }
+        .stat-item .label {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div id="header"></div>
+
+    <div class="container users-container">
+        <div class="users-header">
+            <h1>Gestion des utilisateurs</h1>
+            <p>Gérez les utilisateurs de votre plateforme</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="user-card">
+                    <div class="filter-section">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <select class="form-control" id="roleFilter">
+                                    <option value="">Tous les rôles</option>
+                                    <option value="admin">Administrateurs</option>
+                                    <option value="user">Utilisateurs</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="searchFilter" placeholder="Rechercher un utilisateur...">
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-primary" id="addUserBtn">Ajouter un utilisateur</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Utilisateur</th>
+                                    <th>Email</th>
+                                    <th>Rôle</th>
+                                    <th>Date d'inscription</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- Les utilisateurs seront ajoutés ici dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de détails d'utilisateur -->
+        <div class="modal fade" id="userDetailsModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Détails de l'utilisateur</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="userDetailsContent">
+                            <!-- Les détails de l'utilisateur seront ajoutés ici dynamiquement -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal d'ajout/modification d'utilisateur -->
+        <div class="modal fade" id="userFormModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Ajouter/Modifier un utilisateur</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="userForm">
+                            <input type="hidden" id="userId">
+                            <div class="form-group">
+                                <label for="firstName">Prénom</label>
+                                <input type="text" class="form-control" id="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Nom</label>
+                                <input type="text" class="form-control" id="lastName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Mot de passe</label>
+                                <input type="password" class="form-control" id="password">
+                                <small class="form-text text-muted">Laissez vide pour ne pas modifier le mot de passe</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="role">Rôle</label>
+                                <select class="form-control" id="role" required>
+                                    <option value="user">Utilisateur</option>
+                                    <option value="admin">Administrateur</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- JavaScript -->
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js"></script>
+    <script type="module">
+        import { auth, db } from '../../js/config.js';
+        import { getUserData } from '../../js/auth.js';
+        import { showNotification } from '../../js/cart.js';
+        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js';
+        import { collection, query, orderBy, getDocs, addDoc, updateDoc, deleteDoc, doc, where } from 'https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js';
+        import { createUserWithEmailAndPassword, updatePassword } from 'https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js';
+
+        // Charger le header et le footer
+        document.getElementById('header').innerHTML = await fetch('../../components/header.html').then(r => r.text());
+        document.getElementById('footer').innerHTML = await fetch('../../components/footer.html').then(r => r.text());
+
+        // Vérifier l'authentification et les droits d'administrateur
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const userData = await getUserData(user.uid);
+                    if (userData.role !== 'admin') {
+                        window.location.href = '../user/dashboard.html';
+                        return;
+                    }
+                    await loadUsers();
+                } catch (error) {
+                    showNotification(error.message, 'error');
+                }
+            } else {
+                window.location.href = '../auth/login.html';
+            }
+        });
+
+        // Charger les utilisateurs
+        async function loadUsers(filters = {}) {
+            let usersQuery = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
+
+            if (filters.role) {
+                usersQuery = query(usersQuery, where('role', '==', filters.role));
+            }
+
+            const usersSnapshot = await getDocs(usersQuery);
+            const usersTableBody = document.getElementById('usersTableBody');
+            usersTableBody.innerHTML = '';
+
+            usersSnapshot.forEach(doc => {
+                const user = doc.data();
+                const userDate = new Date(user.createdAt.toDate()).toLocaleDateString();
+                const userHtml = `
+                    <tr>
+                        <td>
+                            <div class="user-avatar">
+                                ${user.firstName[0]}${user.lastName[0]}
+                            </div>
+                            ${user.firstName} ${user.lastName}
+                        </td>
+                        <td>${user.email}</td>
+                        <td>
+                            <span class="user-role role-${user.role}">
+                                ${user.role === 'admin' ? 'Administrateur' : 'Utilisateur'}
+                            </span>
+                        </td>
+                        <td>${userDate}</td>
+                        <td>
+                            <div class="user-actions">
+                                <button class="btn btn-sm btn-info" onclick="viewUserDetails('${doc.id}')">Détails</button>
+                                <button class="btn btn-sm btn-warning" onclick="editUser('${doc.id}')">Modifier</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteUser('${doc.id}')">Supprimer</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                usersTableBody.innerHTML += userHtml;
+            });
+        }
+
+        // Voir les détails d'un utilisateur
+        window.viewUserDetails = async (userId) => {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', userId));
+                if (userDoc.exists()) {
+                    const user = userDoc.data();
+                    const userDate = new Date(user.createdAt.toDate()).toLocaleDateString();
+                    const detailsHtml = `
+                        <div class="user-details">
+                            <h4>Informations de l'utilisateur</h4>
+                            <p><strong>Nom:</strong> ${user.firstName} ${user.lastName}</p>
+                            <p><strong>Email:</strong> ${user.email}</p>
+                            <p><strong>Rôle:</strong> ${user.role === 'admin' ? 'Administrateur' : 'Utilisateur'}</p>
+                            <p><strong>Date d'inscription:</strong> ${userDate}</p>
+                            
+                            <div class="user-stats">
+                                <div class="stat-item">
+                                    <div class="number" id="totalOrders">0</div>
+                                    <div class="label">Commandes</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="number" id="totalSpent">0€</div>
+                                    <div class="label">Total dépensé</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="number" id="lastOrder">-</div>
+                                    <div class="label">Dernière commande</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('userDetailsContent').innerHTML = detailsHtml;
+                    $('#userDetailsModal').modal('show');
+
+                    // Charger les statistiques de l'utilisateur
+                    const ordersQuery = query(
+                        collection(db, 'orders'),
+                        where('userId', '==', userId),
+                        orderBy('createdAt', 'desc')
+                    );
+                    const ordersSnapshot = await getDocs(ordersQuery);
+                    let totalSpent = 0;
+                    let lastOrderDate = '-';
+
+                    ordersSnapshot.forEach(doc => {
+                        const order = doc.data();
+                        totalSpent += order.total;
+                        if (!lastOrderDate || lastOrderDate === '-') {
+                            lastOrderDate = new Date(order.createdAt.toDate()).toLocaleDateString();
+                        }
+                    });
+
+                    document.getElementById('totalOrders').textContent = ordersSnapshot.size;
+                    document.getElementById('totalSpent').textContent = `${totalSpent}€`;
+                    document.getElementById('lastOrder').textContent = lastOrderDate;
+                }
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        };
+
+        // Éditer un utilisateur
+        window.editUser = async (userId) => {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', userId));
+                if (userDoc.exists()) {
+                    const user = userDoc.data();
+                    document.getElementById('userId').value = userId;
+                    document.getElementById('firstName').value = user.firstName;
+                    document.getElementById('lastName').value = user.lastName;
+                    document.getElementById('email').value = user.email;
+                    document.getElementById('role').value = user.role;
+                    document.getElementById('password').value = '';
+                    $('#userFormModal').modal('show');
+                }
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        };
+
+        // Supprimer un utilisateur
+        window.deleteUser = async (userId) => {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+                try {
+                    await deleteDoc(doc(db, 'users', userId));
+                    showNotification('Utilisateur supprimé avec succès', 'success');
+                    await loadUsers();
+                } catch (error) {
+                    showNotification(error.message, 'error');
+                }
+            }
+        };
+
+        // Gérer la soumission du formulaire
+        document.getElementById('userForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const userId = document.getElementById('userId').value;
+            const userData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                role: document.getElementById('role').value,
+                updatedAt: new Date()
+            };
+
+            try {
+                if (userId) {
+                    // Mise à jour de l'utilisateur
+                    await updateDoc(doc(db, 'users', userId), userData);
+                    const password = document.getElementById('password').value;
+                    if (password) {
+                        const user = auth.currentUser;
+                        await updatePassword(user, password);
+                    }
+                    showNotification('Utilisateur mis à jour avec succès', 'success');
+                } else {
+                    // Ajout d'un nouvel utilisateur
+                    const password = document.getElementById('password').value;
+                    if (!password) {
+                        throw new Error('Le mot de passe est requis pour un nouvel utilisateur');
+                    }
+                    const userCredential = await createUserWithEmailAndPassword(auth, userData.email, password);
+                    userData.createdAt = new Date();
+                    await addDoc(collection(db, 'users'), userData);
+                    showNotification('Utilisateur ajouté avec succès', 'success');
+                }
+
+                $('#userFormModal').modal('hide');
+                document.getElementById('userForm').reset();
+                document.getElementById('userId').value = '';
+                await loadUsers();
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        });
+
+        // Ajouter un nouvel utilisateur
+        document.getElementById('addUserBtn').addEventListener('click', () => {
+            document.getElementById('userForm').reset();
+            document.getElementById('userId').value = '';
+            $('#userFormModal').modal('show');
+        });
+
+        // Gérer les filtres
+        document.getElementById('roleFilter').addEventListener('change', () => {
+            const filters = {
+                role: document.getElementById('roleFilter').value
+            };
+            loadUsers(filters);
+        });
+
+        document.getElementById('searchFilter').addEventListener('input', (e) => {
+            // Implémenter la recherche
+            showNotification('Fonctionnalité à venir', 'info');
+        });
+    </script>
+</body>
+</html> 

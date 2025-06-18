@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestion des commandes - StepStyle</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto+Slab:400,300,700|Kaushan+Script|Droid+Serif:400,400i" rel="stylesheet">
+    <link href="../../css/styles.css" rel="stylesheet">
+    <style>
+        .orders-container {
+            padding: 40px 0;
+        }
+        .orders-header {
+            margin-bottom: 30px;
+        }
+        .order-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .order-details {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .order-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        .order-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-right: 15px;
+            border-radius: 4px;
+        }
+        .order-item-details {
+            flex-grow: 1;
+        }
+        .order-status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .status-pending {
+            background: #ffeeba;
+            color: #856404;
+        }
+        .status-processing {
+            background: #b8daff;
+            color: #004085;
+        }
+        .status-shipped {
+            background: #c3e6cb;
+            color: #155724;
+        }
+        .status-delivered {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .filter-section {
+            margin-bottom: 20px;
+        }
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div id="header"></div>
+
+    <div class="container orders-container">
+        <div class="orders-header">
+            <h1>Gestion des commandes</h1>
+            <p>Suivez et gérez les commandes de vos clients</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="order-card">
+                    <div class="filter-section">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <select class="form-control" id="statusFilter">
+                                    <option value="">Tous les statuts</option>
+                                    <option value="pending">En attente</option>
+                                    <option value="processing">En cours de traitement</option>
+                                    <option value="shipped">Expédiée</option>
+                                    <option value="delivered">Livrée</option>
+                                    <option value="cancelled">Annulée</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="date" class="form-control" id="dateFilter">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="searchFilter" placeholder="Rechercher une commande...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Client</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                                <!-- Les commandes seront ajoutées ici dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de détails de commande -->
+        <div class="modal fade" id="orderDetailsModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Détails de la commande</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="orderDetailsContent">
+                            <!-- Les détails de la commande seront ajoutés ici dynamiquement -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- JavaScript -->
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js"></script>
+    <script type="module">
+        import { auth, db } from '../../js/config.js';
+        import { getUserData } from '../../js/auth.js';
+        import { showNotification } from '../../js/cart.js';
+        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js';
+        import { collection, query, orderBy, getDocs, updateDoc, doc, where } from 'https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js';
+
+        // Charger le header et le footer
+        document.getElementById('header').innerHTML = await fetch('../../components/header.html').then(r => r.text());
+        document.getElementById('footer').innerHTML = await fetch('../../components/footer.html').then(r => r.text());
+
+        // Vérifier l'authentification et les droits d'administrateur
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const userData = await getUserData(user.uid);
+                    if (userData.role !== 'admin') {
+                        window.location.href = '../user/dashboard.html';
+                        return;
+                    }
+                    await loadOrders();
+                } catch (error) {
+                    showNotification(error.message, 'error');
+                }
+            } else {
+                window.location.href = '../auth/login.html';
+            }
+        });
+
+        // Charger les commandes
+        async function loadOrders(filters = {}) {
+            let ordersQuery = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
+
+            if (filters.status) {
+                ordersQuery = query(ordersQuery, where('status', '==', filters.status));
+            }
+
+            const ordersSnapshot = await getDocs(ordersQuery);
+            const ordersTableBody = document.getElementById('ordersTableBody');
+            ordersTableBody.innerHTML = '';
+
+            ordersSnapshot.forEach(doc => {
+                const order = doc.data();
+                const orderDate = new Date(order.createdAt.toDate()).toLocaleDateString();
+                const orderHtml = `
+                    <tr>
+                        <td>${doc.id}</td>
+                        <td>${order.userName}</td>
+                        <td>${orderDate}</td>
+                        <td>${order.total}€</td>
+                        <td>
+                            <span class="order-status status-${order.status}">
+                                ${getStatusLabel(order.status)}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="order-actions">
+                                <button class="btn btn-sm btn-info" onclick="viewOrderDetails('${doc.id}')">Détails</button>
+                                <button class="btn btn-sm btn-success" onclick="updateOrderStatus('${doc.id}', 'shipped')">Expédier</button>
+                                <button class="btn btn-sm btn-danger" onclick="updateOrderStatus('${doc.id}', 'cancelled')">Annuler</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                ordersTableBody.innerHTML += orderHtml;
+            });
+        }
+
+        // Obtenir le libellé du statut
+        function getStatusLabel(status) {
+            const labels = {
+                pending: 'En attente',
+                processing: 'En cours de traitement',
+                shipped: 'Expédiée',
+                delivered: 'Livrée',
+                cancelled: 'Annulée'
+            };
+            return labels[status] || status;
+        }
+
+        // Mettre à jour le statut d'une commande
+        window.updateOrderStatus = async (orderId, status) => {
+            try {
+                await updateDoc(doc(db, 'orders', orderId), { status });
+                showNotification('Statut de la commande mis à jour', 'success');
+                await loadOrders();
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        };
+
+        // Voir les détails d'une commande
+        window.viewOrderDetails = async (orderId) => {
+            try {
+                const orderDoc = await getDoc(doc(db, 'orders', orderId));
+                if (orderDoc.exists()) {
+                    const order = orderDoc.data();
+                    const orderDate = new Date(order.createdAt.toDate()).toLocaleDateString();
+                    const detailsHtml = `
+                        <div class="order-details">
+                            <h4>Informations de la commande</h4>
+                            <p><strong>ID:</strong> ${orderId}</p>
+                            <p><strong>Date:</strong> ${orderDate}</p>
+                            <p><strong>Client:</strong> ${order.userName}</p>
+                            <p><strong>Email:</strong> ${order.userEmail}</p>
+                            <p><strong>Statut:</strong> ${getStatusLabel(order.status)}</p>
+                            <p><strong>Total:</strong> ${order.total}€</p>
+                            
+                            <h4>Adresse de livraison</h4>
+                            <p>${order.shippingAddress.street}</p>
+                            <p>${order.shippingAddress.city}, ${order.shippingAddress.postalCode}</p>
+                            <p>${order.shippingAddress.country}</p>
+                            
+                            <h4>Articles commandés</h4>
+                            ${order.items.map(item => `
+                                <div class="order-item">
+                                    <img src="${item.imageUrl}" alt="${item.name}" class="order-item-image">
+                                    <div class="order-item-details">
+                                        <h5>${item.name}</h5>
+                                        <p>Quantité: ${item.quantity}</p>
+                                        <p>Prix unitaire: ${item.price}€</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    document.getElementById('orderDetailsContent').innerHTML = detailsHtml;
+                    $('#orderDetailsModal').modal('show');
+                }
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        };
+
+        // Gérer les filtres
+        document.getElementById('statusFilter').addEventListener('change', () => {
+            const filters = {
+                status: document.getElementById('statusFilter').value
+            };
+            loadOrders(filters);
+        });
+
+        document.getElementById('dateFilter').addEventListener('change', () => {
+            // Implémenter le filtrage par date
+            showNotification('Fonctionnalité à venir', 'info');
+        });
+
+        document.getElementById('searchFilter').addEventListener('input', (e) => {
+            // Implémenter la recherche
+            showNotification('Fonctionnalité à venir', 'info');
+        });
+    </script>
+</body>
+</html> 
