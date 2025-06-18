@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>À Propos - StepStyle</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto+Slab:400,300,700|Kaushan+Script|Droid+Serif:400,400i" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Include Header -->
+    <div id="header-container"></div>
+
+    <!-- About Section -->
+    <section id="about" class="bg-light-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">À Propos de StepStyle</h2>
+                    <h3 class="section-subheading text-muted">Notre histoire et notre passion pour la chaussure.</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="timeline">
+                        <li>
+                            <div class="timeline-image">
+                                <img class="img-circle img-responsive" src="https://images.unsplash.com/photo-1449505278894-297fdb3edbc1?fit=crop&w=200&h=200" alt="">
+                            </div>
+                            <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                    <h4>2020</h4>
+                                    <h4 class="subheading">Nos Débuts</h4>
+                                </div>
+                                <div class="timeline-body">
+                                    <p class="text-muted">StepStyle est né de notre passion pour les chaussures de qualité et du désir d'offrir une expérience d'achat unique.</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="timeline-inverted">
+                            <div class="timeline-image">
+                                <img class="img-circle img-responsive" src="https://images.unsplash.com/photo-1460353581641-37baddab0fa2?fit=crop&w=200&h=200" alt="">
+                            </div>
+                            <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                    <h4>2021</h4>
+                                    <h4 class="subheading">Expansion</h4>
+                                </div>
+                                <div class="timeline-body">
+                                    <p class="text-muted">Notre gamme s'est élargie pour inclure les meilleures marques et les dernières tendances.</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-image">
+                                <img class="img-circle img-responsive" src="https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?fit=crop&w=200&h=200" alt="">
+                            </div>
+                            <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                    <h4>2022</h4>
+                                    <h4 class="subheading">Innovation</h4>
+                                </div>
+                                <div class="timeline-body">
+                                    <p class="text-muted">Lancement de notre plateforme en ligne pour une expérience d'achat plus pratique.</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="timeline-inverted">
+                            <div class="timeline-image">
+                                <h4>Rejoignez<br>Notre<br>Histoire!</h4>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <p class="large text-muted">
+                        Chez StepStyle, nous croyons que chaque pas compte. Notre mission est de vous offrir les meilleures chaussures, alliant style, confort et qualité. Notre équipe passionnée sélectionne soigneusement chaque modèle pour vous garantir une satisfaction totale.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Include Footer -->
+    <div id="footer-container"></div>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+    
+    <!-- Load Components -->
+    <script>
+        // Load header
+        fetch('../components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+            });
+            
+        // Load footer
+        fetch('../components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-container').innerHTML = data;
+            });
+    </script>
+</body>
+</html> 
