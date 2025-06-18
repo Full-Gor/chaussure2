@@ -1,9 +1,12 @@
 import { initNavigation } from './navigation.js';
-import { initCart, updateCartDisplay, cart } from './cart.js';
+import { initCart, cart, showNotification } from './cart.js';
 import { initCheckout } from './checkout.js';
-import { auth } from './auth.js';
+import { isAuthenticated } from './auth.js';
+import { initCategories, initCategoryFromUrl } from './categories.js';
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM Content Loaded');
+    
     // Initialize all modules
     initNavigation();
     initCart();
@@ -11,6 +14,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize cart display
     updateCartDisplay();
+    
+    // Initialize categories
+    initCategories();
+    initCategoryFromUrl();
     
     // Portfolio card flip functionality
     const portfolioLinks = document.querySelectorAll('.portfolio-link');
@@ -60,34 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Ajout au panier
-    document.querySelectorAll('.add-to-cart').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            
-            const productId = this.dataset.id;
-            const productName = this.dataset.name;
-            const productPrice = parseFloat(this.dataset.price);
-            const quantity = parseInt(document.querySelector(`.quantity[data-id="${productId}"]`).textContent);
-            const productImage = this.closest('.portfolio-card').querySelector('img').src;
-            
-            cart.addItem({
-                id: productId,
-                name: productName,
-                price: productPrice,
-                quantity: quantity,
-                image: productImage
-            });
-            
-            // Notification
-            const notification = document.getElementById('notification');
-            notification.textContent = 'Produit ajouté au panier';
-            notification.style.display = 'block';
-            
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
-        });
-    });
+    initAddToCartButtons();
     
     // Navigation fluide
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -147,4 +127,26 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-}); 
+    
+    // Vérifier que le panier est bien initialisé
+    console.log('Cart instance:', cart);
+});
+
+function initAddToCartButtons() {
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const id = button.dataset.id;
+            const name = button.dataset.name;
+            const price = parseFloat(button.dataset.price);
+            const quantity = parseInt(document.querySelector(`.quantity[data-id="${id}"]`).textContent);
+            
+            console.log('Adding to cart:', { id, name, price, quantity });
+            
+            cart.addItem({ id, name, price, quantity });
+            showNotification(`${name} added to cart!`);
+        });
+    });
+} 

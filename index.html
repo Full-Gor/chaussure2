@@ -7,7 +7,6 @@
     <!-- Security Headers -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https: 'unsafe-inline' 'unsafe-eval'; style-src 'self' https: 'unsafe-inline'; img-src 'self' https: data:; font-src 'self' https: data:;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>StepStyle - Premium Footwear</title>
@@ -183,14 +182,17 @@
         .service-heading { margin: 15px 0; text-transform: none; }
         
         /* Product Card Styles */
-        #collections .portfolio-item { margin-bottom: 30px; }
+        #collections .portfolio-item { 
+            margin-bottom: 30px;
+            perspective: 1000px;
+        }
         #collections .portfolio-link {
             display: block;
             position: relative;
             margin: 0 auto;
             max-width: 400px;
             height: 400px;
-            perspective: 1000px;
+            cursor: pointer;
         }
         #collections .portfolio-card {
             position: relative;
@@ -200,7 +202,9 @@
             transition: transform 0.8s;
             transform-style: preserve-3d;
         }
-        #collections .portfolio-link.flipped .portfolio-card { transform: rotateY(180deg); }
+        #collections .portfolio-link:hover .portfolio-card {
+            transform: rotateY(180deg);
+        }
         #collections .portfolio-front, #collections .portfolio-back {
             position: absolute;
             width: 100%;
@@ -210,7 +214,10 @@
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        #collections .portfolio-front { background-color: #fff; }
+        #collections .portfolio-front { 
+            background-color: #fff;
+            transform: rotateY(0deg);
+        }
         #collections .portfolio-front img { width: 100%; height: 100%; object-fit: cover; }
         #collections .portfolio-back {
             transform: rotateY(180deg);
@@ -1104,5 +1111,4 @@
     <!-- Main JavaScript -->
     <script type="module" src="js/main.js"></script>
 </body>
-</html>
 </html>

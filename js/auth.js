@@ -1,5 +1,33 @@
-import { auth, db } from './config.js';
-import { showNotification } from './cart.js';
+// Configuration Firebase
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js';
+import { getAuth } from 'https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js';
+import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js';
+
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+// Initialisation Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Fonction pour vérifier si l'utilisateur est connecté
+export function isAuthenticated() {
+    return auth.currentUser !== null;
+}
+
+// Fonction pour rediriger vers la page de connexion si non authentifié
+export function requireAuth() {
+    if (!isAuthenticated()) {
+        window.location.href = '/login.html';
+    }
+}
 
 // Fonction d'inscription
 export async function signUp(email, password, firstName, lastName) {
@@ -73,4 +101,7 @@ export async function updateUserProfile(userId, data) {
         showNotification(error.message, 'error');
         throw error;
     }
-} 
+}
+
+// Exporter les instances Firebase
+export { auth, db }; 
