@@ -4,6 +4,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https: 'unsafe-inline' 'unsafe-eval'; style-src 'self' https: 'unsafe-inline'; img-src 'self' https: data:; font-src 'self' https: data:;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>StepStyle - Premium Footwear</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -133,11 +139,12 @@
         header {
             text-align: center;
             color: #fff;
-            background-image: url(https://images.unsplash.com/photo-1600585154340-be6161a56a0c?fit=crop&w=1350&h=900);
-            background-position: center center;
-            background-size: cover;
+            background-image: url('assets/images/nike-black.jpg') !important;
+            background-position: center !important;
+            background-size: cover !important;
             background-attachment: scroll;
             margin-top: 50px;
+            position: relative;
         }
         header .intro-text { padding-top: 100px; padding-bottom: 50px; }
         header .intro-text .intro-lead-in {
@@ -368,9 +375,10 @@
         /* Contact Section Styles */
         section#contact { 
             background-color: #222; 
-            background-image: url(https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?fit=crop&w=1350&h=900); 
-            background-position: center; 
+            background-image: url('assets/images/contact-bg.jpg') !important;
+            background-position: center !important;
             background-repeat: no-repeat; 
+            position: relative;
         }
         section#contact .section-heading { color: #fff; }
         section#contact .form-group { margin-bottom: 25px; }
@@ -404,7 +412,110 @@
             .navbar__link { padding: 1rem 0.8rem; font-size: 0.9rem; }
             .navbar__link i { margin-right: 0.3rem; }
         }
+        
+        /* Protection contre le clickjacking */
+        body { position: relative; }
+        
+        /* Overlay de sécurité pour les images */
+        header::before, section#contact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
     </style>
+    
+    <!-- Scripts de sécurité -->
+    <script>
+        // Protection contre XSS
+        function sanitizeInput(input) {
+            return input.replace(/[<>]/g, '');
+        }
+        
+        // Protection contre CSRF
+        function addCSRFToken() {
+            const token = Math.random().toString(36).substring(2);
+            localStorage.setItem('csrf_token', token);
+            return token;
+        }
+        
+        // Validation des entrées
+        function validateForm(event) {
+            const form = event.target;
+            let isValid = true;
+            
+            // Vérification des champs requis
+            form.querySelectorAll('[required]').forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('error');
+                }
+            });
+            
+            // Validation email
+            const emailField = form.querySelector('input[type="email"]');
+            if (emailField && !isValidEmail(emailField.value)) {
+                isValid = false;
+                emailField.classList.add('error');
+            }
+            
+            if (!isValid) {
+                event.preventDefault();
+                showNotification('Veuillez remplir correctement tous les champs requis', 'error');
+            }
+            
+            // Ajout du token CSRF
+            const csrfToken = addCSRFToken();
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrf_token';
+            csrfInput.value = csrfToken;
+            form.appendChild(csrfInput);
+        }
+        
+        // Validation email
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+        
+        // Rate limiting
+        const submitTimes = {};
+        function checkRateLimit(formId) {
+            const now = Date.now();
+            const lastSubmit = submitTimes[formId] || 0;
+            if (now - lastSubmit < 1000) { // 1 seconde minimum entre les soumissions
+                return false;
+            }
+            submitTimes[formId] = now;
+            return true;
+        }
+        
+        // Initialisation de la sécurité
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ajout des listeners de validation sur tous les formulaires
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function(event) {
+                    validateForm(event);
+                    if (!checkRateLimit(form.id)) {
+                        event.preventDefault();
+                        showNotification('Veuillez patienter avant de soumettre à nouveau', 'error');
+                    }
+                });
+            });
+            
+            // Protection des liens
+            document.querySelectorAll('a').forEach(link => {
+                if (link.href && !link.href.startsWith(window.location.origin)) {
+                    link.setAttribute('rel', 'noopener noreferrer');
+                    link.setAttribute('target', '_blank');
+                }
+            });
+        });
+    </script>
 </head>
 <body id="page-top" class="index">
     <!-- Include Header -->
